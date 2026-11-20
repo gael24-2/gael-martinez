@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JSFiddle dxcty1u9</title>
+
+  <style>
+    /* =========================================================
+   KINETIA · Header responsive
+   Paleta cálida + acento teja. Tipografías Space Grotesk / DM Sans.
+   Breakpoint de contracción: 860px
+   ========================================================= */
+
+:root {
+  --bg:        #FBF7F2;
+  --ink:       #17201C;
+  --muted:     #65736C;
+  --line:      #E5DDD3;
+  --teal:      #2A9D8F;
+  --orange:    #E4572E;
+  --header-h:  84px;
+  --container: 1180px;
+  --ease:      cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ----------------------------- Reset ----------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 24px);
+}
+
+body {
+  margin: 0;
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.no-scroll { overflow: hidden; }
+
+a { color: inherit; text-decoration: none; }
+ul { margin: 0; padding: 0; list-style: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+
+:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* ----------------------------- Header ----------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  border-bottom: 1px solid transparent;
+  transition: border-color .25s var(--ease), box-shadow .25s var(--ease);
+}
+
+.site-header.is-scrolled {
+  border-bottom-color: var(--line);
+  box-shadow: 0 14px 36px -26px rgba(23, 32, 28, .5);
+}
+
+.header__inner {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ----------------------------- Logo ----------------------------- */
+.brand {
+  position: relative;
+  z-index: 130; /* por encima del overlay móvil */
+  display: inline-flex;
+  align-items: center;
+  gap: .7rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  letter-spacing: -.03em;
+}
+
+.brand__mark {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  transition: transform .35s var(--ease);
+}
+
+.brand:hover .brand__mark { transform: rotate(-6deg) scale(1.04); }
+
+.brand__period { color: var(--orange); }
+
+/* ----------------------------- Navegación ----------------------------- */
+.nav { display: flex; align-items: center; }
+
+.nav__list {
+  display: flex;
+  align-items: center;
+  gap: .25rem;
+}
+
+.nav__link {
+  position: relative;
+  display: inline-block;
+  padding: .6rem .9rem;
+  font-size: .94rem;
+  font-weight: 500;
+  color: var(--muted);
+  border-radius: 8px;
+  transition: color .25s var(--ease), background-color .25s var(--ease);
+}
+
+.nav__link::after {
+  content: "";
+  position: absolute;
+  left: .9rem;
+  right: .9rem;
+  bottom: .35rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--orange);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform .3s var(--ease);
+}
+
+.nav__link:hover {
+  color: var(--ink);
+  background: rgba(42, 157, 143, .07);
+}
+
+.nav__link:hover::after { transform: scaleX(1); }
+
+.nav__link--active {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.nav__link--active::after { transform: scaleX(1); }
+
+.nav__link--cta {
+  margin-left: .75rem;
+  padding: .65rem 1.35rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.nav__link--cta::after { display: none; }
+
+.nav__link--cta:hover {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.nav__contact { display: none; }
+
+/* ----------------------------- Hamburguesa ----------------------------- */
+.burger {
+  display: none;
+  position: relative;
+  z-index: 120;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--bg);
+  transition: border-color .25s var(--ease);
+}
+
+.burger:hover { border-color: var(--ink); }
+
+.burger__box {
+  width: 22px;
+  height: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.burger__line {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transition: transform .3s var(--ease), opacity .2s var(--ease);
+}
+
+.burger[aria-expanded="true"] .burger__line:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+.burger[aria-expanded="true"] .burger__line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(.2);
+}
+.burger[aria-expanded="true"] .burger__line:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+/* =========================================================
+   RESPONSIVE · Contracción a 860px
+   ========================================================= */
+@media (max-width: 860px) {
+
+  :root { --header-h: 72px; }
+
+  .burger { display: inline-flex; }
+
+  /* El nav pasa a ser un overlay a pantalla completa */
+  .nav {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: calc(var(--header-h) + 2rem) clamp(1.25rem, 6vw, 2.5rem) 2rem;
+    background: var(--bg);
+    overflow-y: auto;
+    transform: translateY(-100%);
+    visibility: hidden;
+    transition:
+      transform .55s var(--ease),
+      visibility .55s var(--ease);
+  }
+
+  .nav.is-open {
+    transform: translateY(0);
+    visibility: visible;
+  }
+
+  .nav__list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: .25rem;
+    width: 100%;
+    max-width: 720px;
+    margin-inline: auto;
+  }
+
+  /* Animación escalonada de cada ítem */
+  .nav__item {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity .35s var(--ease), transform .35s var(--ease);
+  }
+
+  .nav.is-open .nav__item {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav.is-open .nav__item:nth-child(1) { transition-delay: .10s; }
+  .nav.is-open .nav__item:nth-child(2) { transition-delay: .17s; }
+  .nav.is-open .nav__item:nth-child(3) { transition-delay: .24s; }
+  .nav.is-open .nav__item:nth-child(4) { transition-delay: .31s; }
+
+  .nav__link {
+    display: block;
+    padding: .45rem 0;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 8vw, 3rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -.03em;
+    color: var(--ink);
+    border-radius: 0;
+    background: none;
+  }
+
+  .nav__link::after { display: none; }
+
+  .nav__link:hover {
+    background: none;
+    color: var(--teal);
+  }
+
+  .nav__link--active { color: var(--orange); }
+
+  .nav__link--cta {
+    display: inline-block;
+    align-self: flex-start;
+    margin: 1.25rem 0 0;
+    padding: .9rem 1.4rem;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .nav__link--cta:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  /* Bloque de contacto solo móvil */
+  .nav__contact {
+    display: block;
+    width: 100%;
+    max-width: 720px;
+    margin: 2.5rem auto 0;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity .35s var(--ease) .38s,
+      transform .35s var(--ease) .38s;
+  }
+
+  .nav.is-open .nav__contact {
+    opacity: 1;
+    transform: none;
+  }
+
+  .nav__contact-label {
+    margin: 0 0 .35rem;
+    font-size: .78rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .nav__contact-mail {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(1.1rem, 4vw, 1.35rem);
+    font-weight: 600;
+    color: var(--ink);
+  }
+
+  .nav__contact-mail:hover { color: var(--orange); }
+}
+
+/* ----------------------------- Reduced motion ----------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+/* =========================================================
+   SOLO DEMO · Puedes borrar esta parte
+   ========================================================= */
+.demo-wrap {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 4vw, 2.5rem);
+}
+
+.demo-hero {
+  padding: clamp(4rem, 10vw, 8rem) 0 3.5rem;
+  background:
+    radial-gradient(700px 340px at 85% 0%, rgba(228, 87, 46, .12), transparent 65%),
+    radial-gradient(600px 300px at 5% 10%, rgba(42, 157, 143, .12), transparent 65%);
+}
+
+.demo-kicker {
+  margin: 0 0 .75rem;
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+.demo-title {
+  margin: 0 0 1rem;
+  max-width: 16ch;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(2.2rem, 6vw, 3.8rem);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+
+.demo-lead {
+  margin: 0 0 2rem;
+  max-width: 48ch;
+  font-size: 1.05rem;
+  color: var(--muted);
+}
+
+.demo-btn {
+  display: inline-block;
+  padding: .9rem 1.6rem;
+  border-radius: 999px;
+  background: var(--orange);
+  color: #fff;
+  font-weight: 600;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease);
+  box-shadow: 0 12px 24px -12px rgba(228, 87, 46, .7);
+}
+
+.demo-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px -12px rgba(228, 87, 46, .8);
+}
+
+.demo-section {
+  min-height: 65vh;
+  padding: 3rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.demo-section h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  letter-spacing: -.03em;
+}
+  </style>
+
+  
+</head>
+<body>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Kinetia — Agencia de marketing digital. Estrategia, contenido y performance.">
+  <title>Kinetia · Agencia de Marketing Digital</title>
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Hoja de estilos -->
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header" id="siteHeader">
+    <div class="header__inner">
+
+      <!-- Logo (izquierda) -->
+      <a class="brand" href="#inicio" aria-label="Kinetia, ir al inicio">
+        <svg class="brand__mark" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+          <rect width="40" height="40" rx="12" fill="#2A9D8F"/>
+          <path d="M13 11v18M13 20l9-9M13 20l9 9"
+                fill="none" stroke="#FBF7F2" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="29" cy="11" r="3" fill="#E4572E"/>
+        </svg>
+        <span class="brand__word">kinetia<span class="brand__period">.</span></span>
+      </a>
+
+      <!-- Navegación (derecha) -->
+      <nav class="nav" id="mainNav" aria-label="Navegación principal">
+        <ul class="nav__list">
+          <li class="nav__item">
+            <a class="nav__link nav__link--active" href="#inicio" aria-current="page">Inicio</a>
+          </li>
+          <li class="nav__item">
+            <a class="nav__link" href="#servicios">Servicios</a>
+          </li>
+          <li class="nav__item">
+            <a class="nav__link" href="#blog">Blog</a>
+          </li>
+          <li class="nav__item">
+            <a class="nav__link nav__link--cta" href="#contacto">Contacto</a>
+          </li>
+        </ul>
+
+        <!-- Extra solo visible en el menú móvil -->
+        <div class="nav__contact">
+          <p class="nav__contact-label">Hablemos</p>
+          <a class="nav__contact-mail" href="mailto:hola@kinetia.studio">hola@kinetia.studio</a>
+        </div>
+      </nav>
+
+      <!-- Botón hamburguesa: solo móvil -->
+      <button
+        class="burger"
+        id="menuBtn"
+        type="button"
+        aria-expanded="false"
+        aria-controls="mainNav"
+        aria-label="Abrir menú">
+        <span class="burger__box" aria-hidden="true">
+          <span class="burger__line"></span>
+          <span class="burger__line"></span>
+          <span class="burger__line"></span>
+        </span>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- ============================================================
+       CONTENIDO DE DEMO
+       ============================================================ -->
+  <main>
+    <section class="demo-hero" id="inicio">
+      <div class="demo-wrap">
+        <p class="demo-kicker">Agencia de marketing digital</p>
+        <h1 class="demo-title">Ideas que mueven marcas.</h1>
+        <p class="demo-lead">
+          Estrategia, contenido y performance para negocios que quieren crecer de verdad.
+        </p>
+        <a class="demo-btn" href="#contacto">Empezar un proyecto</a>
+      </div>
+    </section>
+
+    <section class="demo-section" id="servicios">
+      <div class="demo-wrap">
+        <h2>Servicios</h2>
+        <p>Branding, social media, SEO, paid media y contenido.</p>
+      </div>
+    </section>
+
+    <section class="demo-section" id="blog">
+      <div class="demo-wrap">
+        <h2>Blog</h2>
+        <p>Notas sobre estrategia digital, creatividad y datos.</p>
+      </div>
+    </section>
+
+    <section class="demo-section" id="contacto">
+      <div class="demo-wrap">
+        <h2>Contacto</h2>
+        <p>Cuéntanos qué tienes en mente: hola@kinetia.studio</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- JavaScript -->
+  <script src="menu.js"></script>
+</body>
+</html>
+
+  <script>
+    /* =========================================================
+   KINETIA · Lógica del header responsive
+   - Abre / cierra el overlay móvil a <= 860px
+   - Cierra con: botón, ESC, clic en enlace, cambio a escritorio
+   - Bloquea el scroll del body mientras está abierto
+   - Sombra del header al hacer scroll
+   ========================================================= */
+
+(function () {
+  'use strict';
+
+  const header = document.getElementById('siteHeader');
+  const burger = document.getElementById('menuBtn');
+  const nav    = document.getElementById('mainNav');
+  const mq     = window.matchMedia('(max-width: 860px)');
+
+  const isOpen = () => burger.getAttribute('aria-expanded') === 'true';
+
+  /* ----------------------------- Abrir ----------------------------- */
+  function openMenu() {
+    nav.classList.add('is-open');
+    burger.setAttribute('aria-expanded', 'true');
+    burger.setAttribute('aria-label', 'Cerrar menú');
+    document.body.classList.add('no-scroll');
+
+    // Llevamos el foco al primer enlace por accesibilidad
+    const firstLink = nav.querySelector('.nav__link');
+    if (firstLink) {
+      window.setTimeout(() => firstLink.focus({ preventScroll: true }), 280);
+    }
+  }
+
+  /* ----------------------------- Cerrar ----------------------------- */
+  function closeMenu(returnFocus = false) {
+    nav.classList.remove('is-open');
+    burger.setAttribute('aria-expanded', 'false');
+    burger.setAttribute('aria-label', 'Abrir menú');
+    document.body.classList.remove('no-scroll');
+
+    if (returnFocus) burger.focus();
+  }
+
+  /* ----------------------------- Toggle ----------------------------- */
+  function toggleMenu() {
+    isOpen() ? closeMenu(true) : openMenu();
+  }
+
+  /* ----------------------------- Eventos ----------------------------- */
+
+  // Botón hamburguesa
+  burger.addEventListener('click', toggleMenu);
+
+  // Clic en cualquier enlace: cierra solo en móvil
+  nav.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      if (mq.matches) closeMenu();
+    });
+  });
+
+  // Tecla ESC
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && isOpen()) {
+      closeMenu(true);
+    }
+  });
+
+  // Si se pasa a escritorio, reseteamos estado
+  mq.addEventListener('change', (event) => {
+    if (!event.matches) closeMenu();
+  });
+
+  /* ----------------------------- Sombra al hacer scroll ----------------------------- */
+  let frame = null;
+
+  function onScroll() {
+    if (frame) return;
+    frame = window.requestAnimationFrame(() => {
+      header.classList.toggle('is-scrolled', window.scrollY > 10);
+      frame = null;
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+})();
+  </script>
+</body>
+</html>
